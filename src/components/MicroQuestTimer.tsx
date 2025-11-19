@@ -3,13 +3,13 @@ import { Task } from '../types';
 import { Play, Pause, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface MicroJourneyTimerProps {
+interface MicroQuestTimerProps {
   task: Task;
   onComplete: () => void;
   onCancel: () => void;
 }
 
-const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete, onCancel }) => {
+const MicroQuestTimer: React.FC<MicroQuestTimerProps> = ({ task, onComplete, onCancel }) => {
   const [timeLeft, setTimeLeft] = useState(task.durationMinutes * 60);
   const [isActive, setIsActive] = useState(true);
   const [showConfirmCancel, setShowConfirmCancel] = useState(false);
@@ -40,7 +40,7 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
   const progress = ((task.durationMinutes * 60 - timeLeft) / (task.durationMinutes * 60)) * 100;
 
   return (
-    <div className="fixed inset-0 z-50 bg-zen-background flex flex-col items-center justify-center p-6">
+    <div className="fixed inset-0 z-50 bg-zen-background dark:bg-black flex flex-col items-center justify-center p-6">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-20 pointer-events-none">
              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zen-primary/10 via-transparent to-transparent" />
@@ -52,11 +52,11 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="w-full max-w-sm bg-zen-paper border border-white/20 rounded-3xl p-8 text-center space-y-6 shadow-2xl relative z-10"
+                className="w-full max-w-sm bg-zen-paper dark:bg-gray-900 border border-zen-text-muted/20 dark:border-white/20 rounded-3xl p-8 text-center space-y-6 shadow-2xl relative z-10"
             >
-                <h3 className="text-xl font-bold text-white">Abort Mission?</h3>
-                <p className="text-gray-400 text-sm">
-                    Are you sure you want to cancel your journey and go back to the main menu?
+                <h3 className="text-xl font-bold text-zen-text-main dark:text-white">Abort Mission?</h3>
+                <p className="text-zen-text-muted dark:text-gray-400 text-sm">
+                    Are you sure you want to cancel your quest and go back to the main menu?
                 </p>
                 <div className="space-y-3">
                     <button 
@@ -67,7 +67,7 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
                     </button>
                     <button 
                         onClick={() => setShowConfirmCancel(false)}
-                        className="w-full py-3 bg-gray-700 text-white font-bold rounded-xl hover:bg-gray-600 transition-colors"
+                        className="w-full py-3 bg-gray-200 dark:bg-gray-700 text-zen-text-main dark:text-white font-bold rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                     >
                         No, Resume
                     </button>
@@ -81,8 +81,8 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
                 className="w-full max-w-md flex flex-col items-center space-y-12 relative z-10"
             >
                 <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold text-white">{task.title}</h2>
-                    <p className="text-gray-400 text-sm">{task.description}</p>
+                    <h2 className="text-2xl font-bold text-zen-text-main dark:text-white">{task.title}</h2>
+                    <p className="text-zen-text-muted dark:text-gray-400 text-sm">{task.description}</p>
                 </div>
 
                 <div className="relative w-64 h-64 flex items-center justify-center">
@@ -91,7 +91,7 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
                         <circle 
                             cx="128" cy="128" r="120" 
                             stroke="currentColor" strokeWidth="8" fill="none" 
-                            className="text-gray-800" 
+                            className="text-gray-200 dark:text-gray-800" 
                         />
                         <circle 
                             cx="128" cy="128" r="120" 
@@ -103,7 +103,7 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
                         />
                     </svg>
                     
-                    <div className="text-5xl font-mono font-bold text-white tracking-tighter drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                    <div className="text-5xl font-mono font-bold text-zen-text-main dark:text-white tracking-tighter drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
                         {formatTime(timeLeft)}
                     </div>
                 </div>
@@ -111,14 +111,14 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
                 <div className="flex items-center gap-8">
                     <button 
                         onClick={toggleTimer}
-                        className="w-16 h-16 rounded-full bg-zen-paper border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg"
+                        className="w-16 h-16 rounded-full bg-zen-paper dark:bg-gray-900 border border-zen-text-muted/20 dark:border-white/20 flex items-center justify-center text-zen-text-main dark:text-white hover:bg-zen-text-muted/10 dark:hover:bg-white/10 transition-colors shadow-lg"
                     >
                         {isActive ? <Pause size={24} /> : <Play size={24} className="ml-1" />}
                     </button>
                     
                     <button 
                         onClick={() => setShowConfirmCancel(true)}
-                        className="w-16 h-16 rounded-full bg-zen-paper border border-white/20 flex items-center justify-center text-red-500 hover:bg-red-500/10 transition-colors shadow-lg"
+                        className="w-16 h-16 rounded-full bg-zen-paper dark:bg-gray-900 border border-zen-text-muted/20 dark:border-white/20 flex items-center justify-center text-red-500 hover:bg-red-500/10 transition-colors shadow-lg"
                     >
                         <X size={24} />
                     </button>
@@ -130,4 +130,4 @@ const MicroJourneyTimer: React.FC<MicroJourneyTimerProps> = ({ task, onComplete,
   );
 };
 
-export default MicroJourneyTimer;
+export default MicroQuestTimer;

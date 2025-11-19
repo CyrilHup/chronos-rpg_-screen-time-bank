@@ -8,8 +8,8 @@ import ClanHub from './components/ClanHub';
 import TimeBankModal from './components/TimeBankModal';
 import ActiveSession from './components/ActiveSession';
 
-import { AppView, UserState, Task, Clan, Avatar, SimulatedApp, JourneyHistoryItem, ClanQuest, ClanFeedItem, ClanMember } from './types';
-import { INITIAL_APPS, INITIAL_TASKS, INITIAL_AVATAR, MOCK_CLANS } from './constants';
+import { AppView, UserState, Task, Clan, Avatar, SimulatedApp, QuestHistoryItem, ClanQuest, ClanFeedItem, ClanMember } from './types';
+import { INITIAL_APPS, INITIAL_TASKS, INITIAL_AVATAR, MOCK_CLANS, INITIAL_QUESTS } from './constants';
 import InfoFAQ from './components/InfoFAQ';
 import Notification from './components/Notification';
 import Settings from './components/Settings';
@@ -27,14 +27,37 @@ const App = () => {
     lifetimeEarned: 450,
     activeSession: null,
     selectedApp: null,
-    journeys: [],
+    quests: INITIAL_QUESTS,
     history: [],
-    activeJourney: null,
-    activeJourneyTaskIndex: 0
+    activeQuest: null,
+    activeQuestTaskIndex: 0
   });
 
   const [notificationQueue, setNotificationQueue] = useState<string[]>([]);
   const [currentNotification, setCurrentNotification] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const showNotification = (message: string) => {
     setNotificationQueue(prev => [...prev, message]);
@@ -156,7 +179,7 @@ const App = () => {
     else if (currentLevel >= 5) newEvolutionStage = 2;
 
     // 3. Notifications
-    showNotification(`Congrats! You finished a journey and won ${actualReward} minutes.`);
+    showNotification(`Congrats! You finished a quest and won ${actualReward} minutes.`);
     if (clanRewardMessage) {
         showNotification(clanRewardMessage);
     }
@@ -168,7 +191,7 @@ const App = () => {
     }
 
     // 4. Update State
-    const historyItem: JourneyHistoryItem = {
+    const historyItem: QuestHistoryItem = {
         id: `h-${Date.now()}`,
         taskId: task.id,
         taskTitle: task.title,
@@ -370,6 +393,29 @@ const App = () => {
       }));
   };
 
+  const handleUnlockApp = (appId: string, minutes: number) => {
+    if (state.timeBank >= minutes) {
+      setState(prev => ({
+        ...prev,
+        timeBank: prev.timeBank - minutes,
+        activeSession: {
+          appId: appId,
+          startTime: Date.now(),
+          durationMinutes: minutes
+        }
+      }));
+    }
+  };
+
+  const handleStartQuest = (quest: any) => {
+      // For now, just add tasks to active tasks and switch view
+      setState(prev => ({
+          ...prev,
+          activeTasks: [...prev.activeTasks, ...quest.tasks]
+      }));
+      setView(AppView.TASKS);
+  };
+
   const handleLeaveClan = () => {
       if (state.clan && state.clan.ownerId === 'user-1') {
           // Logic for ownership transfer if user is owner
@@ -402,10 +448,10 @@ const App = () => {
         lifetimeEarned: 0,
         activeSession: null,
         selectedApp: null,
-        journeys: [],
+        quests: INITIAL_QUESTS,
         history: [],
-        activeJourney: null,
-        activeJourneyTaskIndex: 0
+        activeQuest: null,
+        activeQuestTaskIndex: 0
       });
       showNotification("Progress has been reset.");
   };
@@ -430,9 +476,7 @@ const App = () => {
             <Dashboard 
                 timeBank={state.timeBank} 
                 avatar={state.avatar}
-                onStartJourney={() => setView(AppView.TASKS)}
-                onOpenFAQ={() => setView(AppView.FAQ)}
-                onOpenSettings={() => setView(AppView.SETTINGS)}
+                onStartQuest={() => setView(AppView.TASKS)}
             />
         );
       case AppView.TASKS:
@@ -470,6 +514,13 @@ const App = () => {
             <Settings 
                 apps={state.apps}
                 onUpdateApp={handleUpdateApp}
+                timeBank={state.timeBank}
+                tasks={state.activeTasks}
+                onUnlockApp={handleUnlockApp}
+                onStartTask={handleQuickTask}
+                onManageQuests={() => setView(AppView.TASKS)}
+                theme={theme}
+                toggleTheme={toggleTheme}
             />
         );
 
@@ -481,9 +532,7 @@ const App = () => {
             <Dashboard 
                 timeBank={state.timeBank} 
                 avatar={state.avatar}
-                onStartJourney={() => setView(AppView.TASKS)}
-                onOpenFAQ={() => setView(AppView.FAQ)}
-                onOpenSettings={() => setView(AppView.SETTINGS)}
+                onStartQuest={() => setView(AppView.TASKS)}
             />
         );
     }
@@ -503,10 +552,18 @@ const App = () => {
             <Profile 
                 avatar={state.avatar}
                 lifetimeEarned={state.lifetimeEarned}
-                journeysCompleted={state.history.length}
+                questsCompleted={state.history.length}
                 onUpdateAvatar={handleUpdateAvatar}
                 onClose={() => setShowProfile(false)}
                 onResetProgress={handleResetProgress}
+                onOpenSettings={() => {
+                    setShowProfile(false);
+                    setView(AppView.SETTINGS);
+                }}
+                onOpenInfo={() => {
+                    setShowProfile(false);
+                    setView(AppView.FAQ);
+                }}
             />
         )}
       </AnimatePresence>

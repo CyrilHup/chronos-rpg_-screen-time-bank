@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -8,14 +9,14 @@ export default {
     extend: {
       colors: {
         zen: {
-          background: '#0B1120', // Deep Dark Blue
-          paper: '#151F32',      // Lighter Dark Blue
-          primary: '#10B981',    // Verdatre (Emerald Green)
-          secondary: '#0F766E',  // Teal
-          accent: '#34D399',     // Soft Emerald
+          background: '#F0FDF4', // Green-50 (Very light green)
+          paper: '#FFFFFF',      // White
+          primary: '#16A34A',    // Green-600 (Natural Green)
+          secondary: '#0D9488',  // Teal-600
+          accent: '#F59E0B',     // Amber-500
           text: {
-            main: '#E2E8F0',     // Light Slate
-            muted: '#94A3B8',    // Slate Gray
+            main: '#14532D',     // Green-900 (Dark Green text)
+            muted: '#64748B',    // Slate-500
           }
         }
       },

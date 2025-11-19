@@ -1,40 +1,58 @@
 import React, { useState } from 'react';
 import { Bell, Moon, Shield, Volume2, Smartphone, LogOut, ChevronRight, ToggleLeft, ToggleRight, Lock, Unlock } from 'lucide-react';
 
-import { SimulatedApp } from '../types';
+import { SimulatedApp, Task } from '../types';
 import * as LucideIcons from 'lucide-react';
+import AppBlockOverlay from './AppBlockOverlay';
 
 interface SettingsProps {
     apps?: SimulatedApp[];
     onUpdateApp?: (appId: string, updates: Partial<SimulatedApp>) => void;
+    timeBank: number;
+    tasks: Task[];
+    onUnlockApp: (appId: string, minutes: number) => void;
+    onStartTask: (task: Task) => void;
+    onManageQuests: () => void;
+    theme: 'light' | 'dark';
+    toggleTheme: () => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({ apps = [], onUpdateApp }) => {
+const Settings: React.FC<SettingsProps> = ({ 
+    apps = [], 
+    onUpdateApp,
+    timeBank,
+    tasks,
+    onUnlockApp,
+    onStartTask,
+    onManageQuests,
+    theme,
+    toggleTheme
+}) => {
   const [notifications, setNotifications] = useState(true);
   const [sound, setSound] = useState(true);
   const [strictMode, setStrictMode] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+  const [selectedAppForOverlay, setSelectedAppForOverlay] = useState<SimulatedApp | null>(null);
 
   const SettingItem = ({ icon: Icon, title, subtitle, type, value, onChange }: any) => (
-    <div className="flex items-center justify-between p-4 bg-zen-paper/40 border border-white/5 rounded-2xl hover:bg-zen-paper/60 transition-colors">
+    <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-900 border border-zen-text-muted/10 dark:border-white/10 rounded-2xl hover:bg-white/80 dark:hover:bg-gray-800 transition-colors shadow-sm">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-zen-primary/10 flex items-center justify-center text-zen-primary">
+        <div className="w-10 h-10 rounded-full bg-zen-primary/10 dark:bg-zen-primary/20 flex items-center justify-center text-zen-primary">
           <Icon size={20} />
         </div>
         <div>
-          <div className="font-bold text-white text-sm">{title}</div>
-          {subtitle && <div className="text-xs text-gray-400">{subtitle}</div>}
+          <div className="font-bold text-zen-text-main dark:text-white text-sm">{title}</div>
+          {subtitle && <div className="text-xs text-zen-text-muted dark:text-gray-400">{subtitle}</div>}
         </div>
       </div>
       
       {type === 'toggle' && (
         <button onClick={() => onChange(!value)} className="text-zen-primary transition-colors">
-          {value ? <ToggleRight size={32} /> : <ToggleLeft size={32} className="text-gray-600" />}
+          {value ? <ToggleRight size={32} /> : <ToggleLeft size={32} className="text-zen-text-muted dark:text-gray-600" />}
         </button>
       )}
       
       {type === 'link' && (
-        <ChevronRight size={20} className="text-gray-500" />
+        <ChevronRight size={20} className="text-zen-text-muted dark:text-gray-600" />
       )}
     </div>
   );
@@ -42,12 +60,12 @@ const Settings: React.FC<SettingsProps> = ({ apps = [], onUpdateApp }) => {
   return (
     <div className="p-6 pb-24 space-y-8 animate-fade-in h-full overflow-y-auto">
       <div className="flex items-center gap-3">
-        <div className="p-3 bg-zen-primary/10 rounded-xl border border-zen-primary/30">
+        <div className="p-3 bg-zen-primary/10 dark:bg-zen-primary/20 rounded-xl border border-zen-primary/30">
             <Smartphone size={24} className="text-zen-primary" />
         </div>
         <div>
-            <h2 className="text-2xl font-bold text-white">Settings</h2>
-            <p className="text-xs text-gray-400 uppercase tracking-wider">System Configuration</p>
+            <h2 className="text-2xl font-bold text-zen-text-main dark:text-white">Settings</h2>
+            <p className="text-xs text-zen-text-muted dark:text-gray-400 uppercase tracking-wider">System Configuration</p>
         </div>
       </div>
 
@@ -55,23 +73,34 @@ const Settings: React.FC<SettingsProps> = ({ apps = [], onUpdateApp }) => {
         {/* App Management Section */}
         {apps.length > 0 && onUpdateApp && (
             <div className="space-y-2">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-2">Managed Apps</h3>
+                <h3 className="text-xs font-bold text-zen-text-muted dark:text-gray-500 uppercase tracking-wider ml-2">Managed Apps</h3>
                 <div className="grid gap-2">
                     {apps.map(app => {
                         // Dynamic Icon Loading
                         const IconComponent = (LucideIcons as any)[app.icon] || LucideIcons.Smartphone;
                         
                         return (
-                            <div key={app.id} className="flex items-center justify-between p-3 bg-zen-paper/40 border border-white/5 rounded-xl">
+                            <div 
+                                key={app.id} 
+                                className={`flex items-center justify-between p-3 bg-white dark:bg-gray-900 border border-zen-text-muted/10 dark:border-white/10 rounded-xl transition-colors shadow-sm ${app.isBlocked ? 'cursor-pointer hover:bg-white/80 dark:hover:bg-gray-800' : 'cursor-default'}`}
+                                onClick={() => {
+                                    if (app.isBlocked) {
+                                        setSelectedAppForOverlay(app);
+                                    }
+                                }}
+                            >
                                 <div className="flex items-center gap-3">
                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white ${app.color}`}>
                                         <IconComponent size={16} />
                                     </div>
-                                    <span className="font-bold text-white text-sm">{app.name}</span>
+                                    <span className="font-bold text-zen-text-main dark:text-white text-sm">{app.name}</span>
                                 </div>
                                 <button 
-                                    onClick={() => onUpdateApp(app.id, { isBlocked: !app.isBlocked })}
-                                    className={`p-2 rounded-lg transition-colors ${app.isBlocked ? 'bg-red-500/20 text-red-500' : 'bg-green-500/20 text-green-500'}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onUpdateApp(app.id, { isBlocked: !app.isBlocked });
+                                    }}
+                                    className={`p-2 rounded-lg transition-colors ${app.isBlocked ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'}`}
                                 >
                                     {app.isBlocked ? <Lock size={16} /> : <Unlock size={16} />}
                                 </button>
@@ -82,8 +111,29 @@ const Settings: React.FC<SettingsProps> = ({ apps = [], onUpdateApp }) => {
             </div>
         )}
 
+        {selectedAppForOverlay && (
+            <AppBlockOverlay
+                app={selectedAppForOverlay}
+                timeBank={timeBank}
+                tasks={tasks}
+                onClose={() => setSelectedAppForOverlay(null)}
+                onUnlock={(minutes) => {
+                    onUnlockApp(selectedAppForOverlay.id, minutes);
+                    setSelectedAppForOverlay(null);
+                }}
+                onStartTask={(task) => {
+                    onStartTask(task);
+                    setSelectedAppForOverlay(null);
+                }}
+                onManageQuests={() => {
+                    onManageQuests();
+                    setSelectedAppForOverlay(null);
+                }}
+            />
+        )}
+
         <div className="space-y-2">
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-2">General</h3>
+            <h3 className="text-xs font-bold text-zen-text-muted dark:text-gray-500 uppercase tracking-wider ml-2">General</h3>
             <SettingItem 
                 icon={Bell} 
                 title="Notifications" 
@@ -103,11 +153,11 @@ const Settings: React.FC<SettingsProps> = ({ apps = [], onUpdateApp }) => {
         </div>
 
         <div className="space-y-2">
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-2">Focus Mode</h3>
+            <h3 className="text-xs font-bold text-zen-text-muted dark:text-gray-500 uppercase tracking-wider ml-2">Focus Mode</h3>
             <SettingItem 
                 icon={Shield} 
                 title="Strict Mode" 
-                subtitle="Prevent cancelling journeys" 
+                subtitle="Prevent cancelling quests" 
                 type="toggle" 
                 value={strictMode} 
                 onChange={setStrictMode} 
@@ -115,15 +165,15 @@ const Settings: React.FC<SettingsProps> = ({ apps = [], onUpdateApp }) => {
              <SettingItem 
                 icon={Moon} 
                 title="Dark Theme" 
-                subtitle="Always on" 
+                subtitle="Switch between Zen and Cyberpunk" 
                 type="toggle" 
-                value={darkMode} 
-                onChange={setDarkMode} 
+                value={theme === 'dark'} 
+                onChange={toggleTheme} 
             />
         </div>
       </div>
       
-      <div className="text-center text-xs text-gray-600 pt-8">
+      <div className="text-center text-xs text-zen-text-muted dark:text-gray-600 pt-8">
           Chronos RPG v2.4.0 • Build 2025.11.19
       </div>
     </div>

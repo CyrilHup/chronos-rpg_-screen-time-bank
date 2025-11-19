@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Task, JourneyHistoryItem } from '../types';
+import { Task, QuestHistoryItem } from '../types';
 import { Play, Sparkles, Trophy, Edit2, X, Trash2, Pause, Square, Activity, History, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 
 interface TaskCenterProps {
   tasks: Task[];
-  history: JourneyHistoryItem[];
+  history: QuestHistoryItem[];
   onCompleteTask: (task: Task) => void;
   setTasks: (tasks: Task[]) => void;
 }
@@ -117,19 +117,19 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-            <h2 className="text-2xl font-bold text-white">
-                Journeys
+            <h2 className="text-2xl font-bold text-zen-text-main dark:text-white">
+                Quests
             </h2>
-            <p className="text-zen-primary/60 text-xs tracking-wider uppercase">
+            <p className="text-zen-primary text-xs tracking-wider uppercase">
                 Select your path
             </p>
         </div>
-        <div className="flex gap-2 bg-zen-paper/50 p-1 rounded-xl border border-white/10">
+        <div className="flex gap-2 bg-zen-text-muted/5 dark:bg-white/5 p-1 rounded-xl border border-zen-text-muted/10 dark:border-white/10">
             <button 
                 onClick={() => setViewMode('active')}
                 className={clsx(
                     "px-4 py-2 rounded-lg text-sm font-bold transition-all",
-                    viewMode === 'active' ? "bg-zen-primary text-black" : "text-zen-text-muted hover:text-white"
+                    viewMode === 'active' ? "bg-zen-primary text-white" : "text-zen-text-muted dark:text-gray-400 hover:text-zen-text-main dark:hover:text-white"
                 )}
             >
                 Active
@@ -138,7 +138,7 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                 onClick={() => setViewMode('history')}
                 className={clsx(
                     "px-4 py-2 rounded-lg text-sm font-bold transition-all",
-                    viewMode === 'history' ? "bg-zen-primary text-black" : "text-zen-text-muted hover:text-white"
+                    viewMode === 'history' ? "bg-zen-primary text-white" : "text-zen-text-muted dark:text-gray-400 hover:text-zen-text-main dark:hover:text-white"
                 )}
             >
                 History
@@ -167,11 +167,11 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-zen-background"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-zen-background dark:bg-gray-950"
                     >
                         {/* Background Elements */}
                         <div className="absolute inset-0 opacity-20 pointer-events-none">
-                            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zen-primary/10 via-transparent to-transparent" />
+                            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zen-primary/20 via-transparent to-transparent" />
                         </div>
 
                         {showEndConfirmation ? (
@@ -179,11 +179,11 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.9, opacity: 0 }}
-                                className="w-full max-w-sm bg-zen-paper border border-white/20 rounded-3xl p-8 text-center space-y-6 shadow-2xl relative z-10"
+                                className="w-full max-w-sm bg-zen-paper dark:bg-gray-900 border border-zen-text-muted/10 dark:border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-2xl relative z-10"
                             >
-                                <h3 className="text-xl font-bold text-white">Abort Mission?</h3>
-                                <p className="text-gray-400 text-sm">
-                                    Are you sure you want to cancel your journey? You won't receive any minutes.
+                                <h3 className="text-xl font-bold text-zen-text-main dark:text-white">Abort Mission?</h3>
+                                <p className="text-zen-text-muted dark:text-gray-400 text-sm">
+                                    Are you sure you want to cancel your quest? You won't receive any minutes.
                                 </p>
                                 <div className="space-y-3">
                                     <button 
@@ -197,7 +197,7 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                                     </button>
                                     <button 
                                         onClick={() => setShowEndConfirmation(false)}
-                                        className="w-full py-3 bg-gray-700 text-white font-bold rounded-xl hover:bg-gray-600 transition-colors"
+                                        className="w-full py-3 bg-gray-300 dark:bg-gray-700 text-zen-text-main dark:text-white font-bold rounded-xl hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
                                     >
                                         No, Resume
                                     </button>
@@ -208,34 +208,34 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                                 {/* Timer Circle */}
                                 <div className="relative w-64 h-64 flex items-center justify-center">
                                     <svg className="absolute inset-0 w-full h-full -rotate-90">
-                                        <circle cx="128" cy="128" r="120" stroke="#1f2937" strokeWidth="8" fill="none" />
+                                        <circle cx="128" cy="128" r="120" stroke="currentColor" strokeWidth="8" fill="none" className="text-gray-200 dark:text-gray-800" />
                                         <motion.circle 
                                             cx="128" cy="128" r="120" 
-                                            stroke="#10b981" 
+                                            stroke="#16A34A" 
                                             strokeWidth="8" 
                                             fill="none" 
                                             strokeDasharray={754}
                                             strokeDashoffset={754 - (754 * (timer / (activeTask.durationMinutes * 60)))}
                                             strokeLinecap="round"
-                                            className="drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+                                            className="drop-shadow-[0_0_15px_rgba(22,163,74,0.3)]"
                                         />
                                     </svg>
-                                    <div className="text-5xl font-mono font-bold text-white tracking-tighter">
+                                    <div className="text-5xl font-mono font-bold text-zen-text-main dark:text-white tracking-tighter">
                                         {formatTime(timer)}
                                     </div>
                                 </div>
 
                                 <div className="text-center space-y-2">
-                                    <h3 className="text-xl font-bold text-white">{activeTask.title}</h3>
-                                    <p className="text-gray-400">{activeTask.description}</p>
+                                    <h3 className="text-xl font-bold text-zen-text-main dark:text-white">{activeTask.title}</h3>
+                                    <p className="text-zen-text-muted dark:text-gray-400">{activeTask.description}</p>
                                 </div>
 
                                 <div className="flex gap-6">
                                     <button 
                                         onClick={() => setIsPaused(!isPaused)}
-                                        className="flex flex-col items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                                        className="flex flex-col items-center gap-2 text-zen-text-muted dark:text-gray-400 hover:text-zen-text-main dark:hover:text-white transition-colors"
                                     >
-                                        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
+                                        <div className="w-12 h-12 rounded-full border border-zen-text-muted/20 dark:border-white/20 flex items-center justify-center hover:bg-zen-text-muted/10 dark:hover:bg-white/10 transition-colors">
                                             {isPaused ? <Play size={20} /> : <Pause size={20} />}
                                         </div>
                                         <span className="text-xs uppercase tracking-widest">{isPaused ? "Resume" : "Pause"}</span>
@@ -259,20 +259,20 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
             {/* Wind Down Section */}
             {windDownTasks.length > 0 && (
                 <div className="space-y-4">
-                    <h3 className="text-lg font-bold text-white">Choose Your Wind-Down Journey</h3>
+                    <h3 className="text-lg font-bold text-zen-text-main dark:text-white">Choose Your Wind-Down Quest</h3>
                     <div className="space-y-3">
                         {windDownTasks.map((task) => (
                             <div key={task.id} className="relative group">
                                 <button 
                                     onClick={() => startTask(task)}
                                     disabled={isEditMode}
-                                    className="w-full text-left p-5 bg-zen-paper/40 border border-white/5 hover:border-zen-primary/50 rounded-2xl transition-all duration-300 hover:bg-zen-paper/60"
+                                    className="w-full text-left p-5 bg-white dark:bg-gray-900 border border-zen-text-muted/10 dark:border-white/10 hover:border-zen-primary/50 rounded-2xl transition-all duration-300 hover:bg-white/80 dark:hover:bg-gray-800 shadow-sm"
                                 >
                                     <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-bold text-white">{task.title}</h4>
-                                        <span className="text-xs text-gray-400">{task.durationMinutes} min</span>
+                                        <h4 className="font-bold text-zen-text-main dark:text-white">{task.title}</h4>
+                                        <span className="text-xs text-zen-text-muted dark:text-gray-400">{task.durationMinutes} min</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                                    <div className="flex items-center gap-2 text-sm text-zen-text-muted dark:text-gray-400">
                                         <Sparkles size={14} className="text-zen-primary" />
                                         <span>{task.description}</span>
                                     </div>
@@ -293,19 +293,19 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
             {/* Other Journeys / Tasks */}
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-white">Daily Quests</h3>
+                    <h3 className="text-lg font-bold text-zen-text-main dark:text-white">Daily Quests</h3>
                 </div>
                 
                 <div className="space-y-3">
                     {otherTasks.map((task) => (
                         <div key={task.id} className="relative group">
                             {editingTaskId === task.id ? (
-                                <div ref={editRef} className="p-4 bg-zen-paper/60 border border-zen-primary rounded-2xl space-y-3">
+                                <div ref={editRef} className="p-4 bg-white dark:bg-gray-900 border border-zen-primary rounded-2xl space-y-3 shadow-sm">
                                     <input 
                                         type="text" 
                                         value={editForm.title || ''}
                                         onChange={(e) => setEditForm({...editForm, title: e.target.value})}
-                                        className="w-full bg-black/30 border border-white/10 rounded px-3 py-2 text-white focus:border-zen-primary outline-none"
+                                        className="w-full bg-zen-text-muted/5 dark:bg-white/5 border border-zen-text-muted/10 dark:border-white/10 rounded px-3 py-2 text-zen-text-main dark:text-white focus:border-zen-primary outline-none"
                                         placeholder="Title"
                                         autoFocus
                                     />
@@ -324,7 +324,7 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                                             onKeyDown={(e) => {
                                                 if (e.key === '-') e.preventDefault();
                                             }}
-                                            className="w-20 bg-black/30 border border-white/10 rounded px-3 py-2 text-white focus:border-zen-primary outline-none"
+                                            className="w-20 bg-zen-text-muted/5 dark:bg-white/5 border border-zen-text-muted/10 dark:border-white/10 rounded px-3 py-2 text-zen-text-main dark:text-white focus:border-zen-primary outline-none"
                                             placeholder="Min"
                                         />
                                         <input 
@@ -340,30 +340,30 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                                             onKeyDown={(e) => {
                                                 if (e.key === '-') e.preventDefault();
                                             }}
-                                            className="w-20 bg-black/30 border border-white/10 rounded px-3 py-2 text-zen-primary focus:border-zen-primary outline-none"
+                                            className="w-20 bg-zen-text-muted/5 dark:bg-white/5 border border-zen-text-muted/10 dark:border-white/10 rounded px-3 py-2 text-zen-primary focus:border-zen-primary outline-none"
                                             placeholder="Reward"
                                         />
                                     </div>
-                                    <div className="text-xs text-gray-500 text-right italic">
+                                    <div className="text-xs text-zen-text-muted dark:text-gray-500 text-right italic">
                                         Click outside to save
                                     </div>
                                 </div>
                             ) : (
                                 <button 
                                     onClick={() => isEditMode ? handleEditClick(task) : startTask(task)}
-                                    className="w-full flex items-center justify-between p-4 bg-zen-paper/20 border border-white/5 hover:border-zen-primary/30 rounded-2xl transition-all"
+                                    className="w-full flex items-center justify-between p-4 bg-white dark:bg-gray-900 border border-zen-text-muted/10 dark:border-white/10 hover:border-zen-primary/30 rounded-2xl transition-all shadow-sm"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-full bg-zen-primary/10 flex items-center justify-center text-zen-primary">
                                             {task.category === 'fitness' ? <Activity size={20} /> : <Trophy size={20} />}
                                         </div>
                                         <div className="text-left">
-                                            <div className="font-bold text-white text-sm">{task.title}</div>
-                                            <div className="text-xs text-gray-500">{task.durationMinutes} min • +{task.rewardMinutes} min</div>
+                                            <div className="font-bold text-zen-text-main dark:text-white text-sm">{task.title}</div>
+                                            <div className="text-xs text-zen-text-muted dark:text-gray-400">{task.durationMinutes} min • +{task.rewardMinutes} min</div>
                                         </div>
                                     </div>
                                     {isEditMode ? (
-                                        <Edit2 size={16} className="text-gray-500" />
+                                        <Edit2 size={16} className="text-zen-text-muted dark:text-gray-400" />
                                     ) : (
                                         <Play size={16} className="text-zen-primary" />
                                     )}
@@ -383,9 +383,9 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
                     {isEditMode && !editingTaskId && (
                         <button 
                             onClick={handleAddNew}
-                            className="w-full py-4 border-2 border-dashed border-white/10 rounded-2xl text-gray-500 hover:border-zen-primary/50 hover:text-zen-primary transition-all flex items-center justify-center gap-2"
+                            className="w-full py-4 border-2 border-dashed border-zen-text-muted/10 dark:border-white/10 rounded-2xl text-zen-text-muted dark:text-gray-400 hover:border-zen-primary/50 hover:text-zen-primary transition-all flex items-center justify-center gap-2"
                         >
-                            <Edit2 size={16} /> Add New Journey
+                            <Edit2 size={16} /> Add New Quest
                         </button>
                     )}
                 </div>
@@ -393,28 +393,28 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ tasks, history, onCompleteTask,
         </>
       ) : (
         <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white">Journey History</h3>
+            <h3 className="text-lg font-bold text-zen-text-main dark:text-white">Quest History</h3>
             {history.length === 0 ? (
-                <div className="text-center py-12 text-zen-text-muted italic bg-zen-paper/20 rounded-2xl border border-white/5">
-                    No journeys completed yet. Start your first mission!
+                <div className="text-center py-12 text-zen-text-muted dark:text-gray-500 italic bg-white dark:bg-gray-900 rounded-2xl border border-zen-text-muted/10 dark:border-white/10 shadow-sm">
+                    No quests completed yet. Start your first mission!
                 </div>
             ) : (
                 <div className="space-y-3">
                     {history.slice().reverse().map((item) => (
-                        <div key={item.id} className="flex items-center justify-between p-4 bg-zen-paper/20 rounded-2xl border border-white/5">
+                        <div key={item.id} className="flex items-center justify-between p-4 bg-white dark:bg-gray-900 rounded-2xl border border-zen-text-muted/10 dark:border-white/10 shadow-sm">
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-zen-primary/10 flex items-center justify-center text-zen-primary">
                                     <History size={20} />
                                 </div>
                                 <div>
-                                    <div className="font-bold text-white text-sm">{item.taskTitle}</div>
-                                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                                    <div className="font-bold text-zen-text-main dark:text-white text-sm">{item.taskTitle}</div>
+                                    <div className="flex items-center gap-2 text-xs text-zen-text-muted dark:text-gray-400">
                                         <Calendar size={12} />
                                         {new Date(item.completedAt).toLocaleDateString()} • {new Date(item.completedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                     </div>
                                 </div>
                             </div>
-                            <div className="text-green-400 font-bold text-sm">+{item.rewardMinutes} min</div>
+                            <div className="text-zen-primary font-bold text-sm">+{item.rewardMinutes} min</div>
                         </div>
                     ))}
                 </div>

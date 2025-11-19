@@ -5,7 +5,7 @@ export enum AppView {
   CLAN = 'CLAN',
   SETTINGS = 'SETTINGS',
   ACTIVE_SESSION = 'ACTIVE_SESSION',
-  JOURNEY_TIMER = 'JOURNEY_TIMER',
+  QUEST_TIMER = 'QUEST_TIMER',
   FAQ = 'FAQ'
 }
 
@@ -35,15 +35,16 @@ export interface Task {
   category?: 'wind-down' | 'focus' | 'fitness' | 'general';
 }
 
-export interface Journey {
+export interface Quest {
   id: string;
   title: string;
   description: string;
   totalDuration: number;
   tasks: Task[];
+  isDaily?: boolean;
 }
 
-export interface JourneyHistoryItem {
+export interface QuestHistoryItem {
   id: string;
   taskId: string;
   taskTitle: string;
@@ -111,10 +112,10 @@ export interface UserState {
   activeTasks: Task[];
   avatar: Avatar;
   clan: Clan | null;
-  journeys: Journey[];
-  history: JourneyHistoryItem[]; // Added history
-  activeJourney: Journey | null;
-  activeJourneyTaskIndex: number;
+  quests: Quest[];
+  history: QuestHistoryItem[]; // Added history
+  activeQuest: Quest | null;
+  activeQuestTaskIndex: number;
   activeSession: { appId: string; startTime: number; durationMinutes: number } | null;
   selectedApp: SimulatedApp | null;
 }

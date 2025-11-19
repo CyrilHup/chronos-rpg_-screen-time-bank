@@ -3,13 +3,13 @@ import { ChevronDown, ChevronUp, HelpCircle, Clock, Shield, Zap } from 'lucide-r
 import { motion, AnimatePresence } from 'framer-motion';
 
 const InfoScreen: React.FC = () => {
-  const [openSection, setOpenSection] = useState<string | null>('journey');
+  const [openSection, setOpenSection] = useState<string | null>('quest');
 
   const sections = [
     {
-      id: 'journey',
-      title: 'What is a Journey?',
-      content: 'A Journey is a guided path within the ZenScreen app designed to help you build healthier digital habits through a series of mindful tasks and reflections.'
+      id: 'quest',
+      title: 'What is a Quest?',
+      content: 'A Quest is a guided path within the ZenScreen app designed to help you build healthier digital habits through a series of mindful tasks and reflections.'
     },
     {
       id: 'earn',
@@ -40,22 +40,22 @@ const InfoScreen: React.FC = () => {
             <HelpCircle size={24} className="text-zen-primary" />
         </div>
         <div>
-            <h2 className="text-2xl font-bold text-zen-text-main">Info & FAQ</h2>
-            <p className="text-xs text-zen-text-muted uppercase tracking-wider">System Documentation</p>
+            <h2 className="text-2xl font-bold text-zen-text-main dark:text-white">Info & FAQ</h2>
+            <p className="text-xs text-zen-text-muted dark:text-gray-400 uppercase tracking-wider">System Documentation</p>
         </div>
       </div>
 
       <div className="relative">
-        <div className="absolute inset-0 bg-zen-paper/40 rounded-3xl border border-white/5" />
+        <div className="absolute inset-0 bg-zen-paper/40 dark:bg-gray-800/40 rounded-3xl border border-zen-text-muted/10 dark:border-white/5" />
         <div className="relative space-y-2 p-4">
             {sections.map((section) => (
-                <div key={section.id} className="bg-zen-background/20 rounded-xl overflow-hidden border border-white/5 hover:border-zen-primary/30 transition-colors">
+                <div key={section.id} className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden border border-zen-text-muted/10 dark:border-white/5 hover:border-zen-primary/30 transition-colors shadow-sm">
                     <button 
                         onClick={() => setOpenSection(openSection === section.id ? null : section.id)}
                         className="w-full flex items-center justify-between p-4 text-left"
                     >
-                        <span className="font-bold text-gray-200 text-sm">{section.title}</span>
-                        {openSection === section.id ? <ChevronUp size={16} className="text-zen-primary" /> : <ChevronDown size={16} className="text-zen-text-muted" />}
+                        <span className="font-bold text-zen-text-main dark:text-gray-200 text-sm">{section.title}</span>
+                        {openSection === section.id ? <ChevronUp size={16} className="text-zen-primary" /> : <ChevronDown size={16} className="text-zen-text-muted dark:text-gray-400" />}
                     </button>
                     <AnimatePresence>
                         {openSection === section.id && (
@@ -65,7 +65,7 @@ const InfoScreen: React.FC = () => {
                                 exit={{ height: 0, opacity: 0 }}
                                 className="px-4 pb-4"
                             >
-                                <p className="text-xs text-zen-text-muted leading-relaxed border-t border-white/5 pt-3">
+                                <p className="text-xs text-zen-text-muted dark:text-gray-400 leading-relaxed border-t border-zen-text-muted/10 dark:border-white/5 pt-3">
                                     {section.content}
                                 </p>
                             </motion.div>
@@ -77,20 +77,20 @@ const InfoScreen: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-4 mt-8">
-          <div className="bg-zen-paper/40 p-4 rounded-xl border border-white/5 text-center space-y-2">
+          <div className="bg-zen-paper/40 dark:bg-gray-800/40 p-4 rounded-xl border border-zen-text-muted/10 dark:border-white/5 text-center space-y-2">
               <Clock className="mx-auto text-zen-primary" size={20} />
-              <div className="text-[10px] text-zen-text-muted uppercase">Version</div>
-              <div className="text-xs font-bold text-zen-text-main">2.4.0</div>
+              <div className="text-[10px] text-zen-text-muted dark:text-gray-400 uppercase">Version</div>
+              <div className="text-xs font-bold text-zen-text-main dark:text-white">2.4.0</div>
           </div>
-          <div className="bg-zen-paper/40 p-4 rounded-xl border border-white/5 text-center space-y-2">
+          <div className="bg-zen-paper/40 dark:bg-gray-800/40 p-4 rounded-xl border border-zen-text-muted/10 dark:border-white/5 text-center space-y-2">
               <Shield className="mx-auto text-zen-secondary" size={20} />
-              <div className="text-[10px] text-zen-text-muted uppercase">Security</div>
-              <div className="text-xs font-bold text-green-400">Secure</div>
+              <div className="text-[10px] text-zen-text-muted dark:text-gray-400 uppercase">Security</div>
+              <div className="text-xs font-bold text-green-500 dark:text-green-400">Secure</div>
           </div>
-          <div className="bg-zen-paper/40 p-4 rounded-xl border border-white/5 text-center space-y-2">
-              <Zap className="mx-auto text-yellow-400" size={20} />
-              <div className="text-[10px] text-zen-text-muted uppercase">Status</div>
-              <div className="text-xs font-bold text-zen-text-main">Online</div>
+          <div className="bg-zen-paper/40 dark:bg-gray-800/40 p-4 rounded-xl border border-zen-text-muted/10 dark:border-white/5 text-center space-y-2">
+              <Zap className="mx-auto text-yellow-500 dark:text-yellow-400" size={20} />
+              <div className="text-[10px] text-zen-text-muted dark:text-gray-400 uppercase">Status</div>
+              <div className="text-xs font-bold text-zen-text-main dark:text-white">Online</div>
           </div>
       </div>
     </div>

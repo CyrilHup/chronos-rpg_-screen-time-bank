@@ -21,7 +21,7 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-soft;
+    @apply bg-white/60 backdrop-blur-lg border border-zen-primary/10 shadow-soft;
   }
   
   .text-glow {

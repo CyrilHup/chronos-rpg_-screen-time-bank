@@ -1,4 +1,4 @@
-import { SimulatedApp, Task, Avatar, CosmeticItem } from './types';
+import { SimulatedApp, Task, Avatar, CosmeticItem, Quest } from './types';
 
 export const INITIAL_APPS: SimulatedApp[] = [
   { id: '1', name: 'Instagram', icon: 'Camera', color: 'bg-pink-600', isBlocked: true },
@@ -15,6 +15,30 @@ export const INITIAL_TASKS: Task[] = [
   { id: 't1', title: 'Deep Stretching', description: 'Full body stretch routine.', durationMinutes: 15, rewardMinutes: 15, category: 'fitness' },
   { id: 't2', title: 'Quick Walk', description: 'Walk around the block without phone.', durationMinutes: 10, rewardMinutes: 12, category: 'fitness' },
   { id: 't3', title: 'Read a Book', description: 'Read physical pages.', durationMinutes: 30, rewardMinutes: 40, category: 'focus' },
+];
+
+export const INITIAL_QUESTS: Quest[] = [
+  {
+    id: 'daily-1',
+    title: 'Morning Awakening',
+    description: 'Start your day with intention and movement.',
+    totalDuration: 25,
+    isDaily: true,
+    tasks: [
+      { id: 't1', title: 'Deep Stretching', description: 'Full body stretch routine.', durationMinutes: 15, rewardMinutes: 15, category: 'fitness' },
+      { id: 't2', title: 'Quick Walk', description: 'Walk around the block without phone.', durationMinutes: 10, rewardMinutes: 12, category: 'fitness' }
+    ]
+  },
+  {
+    id: 'focus-1',
+    title: 'Deep Work Session',
+    description: 'Immerse yourself in a single task.',
+    totalDuration: 30,
+    isDaily: false,
+    tasks: [
+      { id: 't3', title: 'Read a Book', description: 'Read physical pages.', durationMinutes: 30, rewardMinutes: 40, category: 'focus' }
+    ]
+  }
 ];
 
 export const INITIAL_AVATAR: Avatar = {
@@ -46,8 +70,8 @@ export const COSMETIC_SHOP_ITEMS: CosmeticItem[] = [
 
 export const FAQ_ITEMS = [
     {
-      question: 'What is a Journey?',
-      answer: 'A Journey is a guided path within the ZenScreen app designed to help you build healthier digital habits through a series of mindful tasks and reflections.'
+      question: 'What is a Quest?',
+      answer: 'A Quest is a guided path within the ZenScreen app designed to help you build healthier digital habits through a series of mindful tasks and reflections.'
     },
     {
       question: 'How to Earn Time?',

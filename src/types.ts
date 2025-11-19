@@ -120,11 +120,6 @@ export interface UserState {
   selectedApp: SimulatedApp | null;
 }
 
-export interface QuestGenerationRequest {
-  userInterests: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-}
-
 export interface CosmeticItem {
   id: string;
   name: string;

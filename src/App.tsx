@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
+import { Session } from '@supabase/supabase-js';
+import Auth from './components/Auth';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import TaskCenter from './components/TaskCenter';
@@ -16,6 +19,65 @@ import Settings from './components/Settings';
 import { AnimatePresence } from 'framer-motion';
 
 const App = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [loadingSession, setLoadingSession] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoadingSession(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (session?.user) {
+      const fetchProfile = async () => {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('game_state')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching profile:', error);
+        } else if (data && data.game_state && Object.keys(data.game_state).length > 0) {
+          // Merge with default state to ensure new fields are present
+          setState(prev => ({ ...prev, ...data.game_state }));
+        }
+      };
+      fetchProfile();
+    }
+  }, [session]);
+
+  // Save state to Supabase when it changes (debounced 2s)
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const saveState = setTimeout(async () => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          game_state: state,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', session.user.id);
+
+      if (error) {
+        console.error('Error saving state:', error);
+      }
+    }, 2000);
+
+    return () => clearTimeout(saveState);
+  }, [state, session]);
+
   const [view, setView] = useState<AppView>(AppView.DASHBOARD);
   const [showProfile, setShowProfile] = useState(false);
   const [state, setState] = useState<UserState>({
@@ -76,8 +138,6 @@ const App = () => {
           setCurrentNotification({ message: notificationQueue[0], visible: true });
       }
   }, [notificationQueue]); // Removed currentNotification.visible to prevent double-fire loop
-
-  // GeminiService.initialize removed as it is invalid
 
   // handleAppClick removed as it is unused in Dashboard
 
@@ -537,6 +597,14 @@ const App = () => {
         );
     }
   };
+
+  if (loadingSession) {
+    return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Loading Realm...</div>;
+  }
+
+  if (!session) {
+    return <Auth />;
+  }
 
   return (
     <Layout 
